@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<title>SEED</title>
+
+<head th:include="header"/>
+
+<body>
+
+
+<div id="logCki">
+
+    <el-col :span="24">
+        <el-card class="box-card">
+            <el-table  :data="TblLogList"  stripe style="width: 100%">
+                <el-table-column type="index" width="55px"></el-table-column>
+                <el-table-column prop="name" label="num"></el-table-column>
+                <el-table-column :formatter="dateFormat" prop="date" label="time"></el-table-column>
+                <el-table-column prop="passenger" label="passengerName"></el-table-column>
+                <el-table-column prop="message"  label="message"></el-table-column>
+
+            </el-table>
+        </el-card>
+    </el-col>
+
+</div>
+<script th:src="@{/js/charge/shortcut.js}"></script>
+<script th:src="@{/js/charge/logCki.js}"></script>
+</body>
+</html>
+
+

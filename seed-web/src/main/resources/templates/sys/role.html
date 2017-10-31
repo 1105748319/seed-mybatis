@@ -1,0 +1,74 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<script th:src="@{/js/sys/role.js}"></script>
+
+<div id="main-panel">
+    <el-col :span="12">
+        <!--查询工具栏-->
+        <el-row>
+            <el-form :model="queryParam.params">
+                <el-col :span="7" style="padding-right: 5px; padding-bottom: 5px">
+                    <el-input placeholder="请输入角色名称查询" v-model="queryParam.name"></el-input>
+                </el-col>
+                <el-col :span="17">
+                    <el-button-group>
+                        <el-button type="info" @click="query">查询</el-button>
+                        <el-button type="primary" @click="add">新增</el-button>
+                        <el-button type="warning" @click="edit">修改</el-button>
+                        <el-button type="danger" @click="del">删除</el-button>
+                    </el-button-group>
+                </el-col>
+            </el-form>
+        </el-row>
+
+        <!--数据列表-->
+        <czy-page-grid ref="grid" url="/sys/role/selectPageByParams" @current-change="roleGridClick" table-height="78%">
+            <el-table-column type="index" width="55px" ></el-table-column>
+            <el-table-column prop="name" label="角色名称"></el-table-column>
+            <el-table-column prop="code" label="角色编码"></el-table-column>
+            <el-table-column prop="memo" label="备注"></el-table-column>
+        </czy-page-grid>
+
+        <!--维护表单-->
+        <el-dialog title="角色管理" :visible.sync="editDialogShow" size="miny" :close-on-click-modal="false">
+            <el-form :model="formData">
+                <el-form-item label="角色名称" :label-width="formLabelWidth">
+                    <el-input v-model="formData.name"></el-input>
+                </el-form-item>
+                <el-form-item label="角色编码" :label-width="formLabelWidth">
+                    <el-input v-model="formData.code"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" :label-width="formLabelWidth">
+                    <el-input v-model="formData.memo" type="textarea" :rows="5"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="editDialogShow = false">取 消</el-button>
+                <el-button type="primary" @click="save">确 定</el-button>
+            </div>
+        </el-dialog>
+    </el-col>
+
+    <el-col :span="12">
+        <el-row>
+            <el-form :model="queryParam.params">
+                <el-col :span="7" style="padding-right: 5px; padding-bottom: 5px">
+                    <el-input placeholder="请输入菜单名称查询" v-model="queryParam.name"></el-input>
+                </el-col>
+                <el-col :span="17">
+                    <el-button type="primary" @click="saveRoleResource">保存权限</el-button>
+                </el-col>
+            </el-form>
+        </el-row>
+        <el-tree id="orgTree"
+                 ref="resTree"
+                 :default-expanded-keys="defaultExpandedKeys"
+                 :highlight-current="true"
+                 :data="treeData"
+                 :props="defaultProps"
+                 node-key="id"
+                 show-checkbox>
+        </el-tree>
+    </el-col>
+
+</div>

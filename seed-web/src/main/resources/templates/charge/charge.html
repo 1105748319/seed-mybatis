@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<title>SEED</title>
+
+<head th:include="header"/>
+
+<body>
+
+
+<div id="pane">
+    <center>Passenger Name:{{ tblOrder.name }}</center>
+    <el-col :span="24">
+
+        <el-card class="box-card">
+            <div slot="header" style="line-height: 5px;">
+                <span>(F1)Order List</span>
+            </div>
+            <el-table ref="singleTable" highlight-current-row
+                      :data="tableData" stripe style="width: 100%">
+                <el-table-column type="index" width="55px"></el-table-column>
+                <el-table-column prop="orderNum" label="Product order No." width="200px"></el-table-column>
+                <el-table-column prop="name" label="Name"></el-table-column>
+                <el-table-column prop="overweightLuggage" label="Excess Baggage"></el-table-column>
+                <el-table-column prop="seat" label="Seat Selection"></el-table-column>
+                <el-table-column prop="specialLuggage" label="Special Baggage"></el-table-column>
+                <el-table-column prop="other" label="Others"></el-table-column>
+                <el-table-column prop="receivableAmount" label="Amount"></el-table-column>
+                <el-table-column prop="type" label="Status"></el-table-column>
+            </el-table>
+        </el-card>
+
+
+        <el-col :span="24">
+            <el-card class="box-card">
+                <div slot="header" style="line-height: 5px;">
+                    <span>(F2)Breakdown of Costs</span>
+                </div>
+                <el-table ref="detailTable" highlight-current-row :data="detail" stripe style="width: 100%">
+                    <el-table-column type="index" width="55px"></el-table-column>
+                    <el-table-column prop="productType" label="Product Categories"></el-table-column>
+                    <el-table-column prop="productNum" label="Product No."></el-table-column>
+                    <el-table-column prop="productName" label="Name"></el-table-column>
+                    <el-table-column prop="unit" label="Piece/Weight/Seat No."></el-table-column>
+                    <el-table-column prop="money" label="Amount"></el-table-column>
+                </el-table>
+                <el-form>
+                    <el-col :span="24">
+                        <el-row>
+                            <el-col :span="6" :offset="18">
+                                <el-form :inline="true">
+                                    <el-form-item label="Total：">
+                                        <el-input :disabled="true" v-model="moneyALL"></el-input>
+                                    </el-form-item>
+                                </el-form>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                </el-form>
+            </el-card>
+        </el-col>
+
+        <el-col :span="24">
+            <el-tabs v-model="activeName" @tab-click="handleClick">
+
+                <div>
+                    <!--行李收费-->
+                    <el-tab-pane label="(B)Excess Baggage Charge" name="Lbaggage">
+
+                        <el-form :rules="LbaggageRule" :inline="true" ref="LbaggageForm" :model="LbaggageForm"
+                                 label-width="200px">
+                            <el-col :span="24">
+
+                                <el-row>
+                                    <el-col :span="8">
+                                        <el-form-item label="Total Weight" required>
+                                            <input @keyup.enter="keyEnter('#baggage11')" id="baggage12"
+                                                   v-model="LbaggageForm.bagw">
+                                            <span style="color: red; display:none" id="LbaggageFormbagw">eg:9/9.6</span>
+                                        </el-form-item>
+
+                                    </el-col>
+
+                                    <el-col :span="8">
+                                        <el-form-item prop="freeLuggageNum"
+                                                      label="Free Baggage Weight" required>
+                                            <input id="baggage11"
+                                                   @keyup.up="keyUp('#baggage12')"
+                                                   @keyup.enter="keyEnter('#baggage0')"
+                                                   v-model="LbaggageForm.freeLuggageNum">
+                                            <span style="color: red; display:none"
+                                                  id="LbaggageFormfreeLuggageNum">eg:10</span>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="8">
+                                        <el-form-item prop="netBaggage"
+                                                      label="Internet Baggage Weight" required>
+                                            <input id="baggage0"
+                                                   @keyup.up="keyUp('#baggage11')" @keyup.enter="LbaggageCount('#baggage1')"
+                                                   v-model="LbaggageForm.netBaggage">
+                                            <span style="color: red; display:none"
+                                                  id="LbaggageFormnetBaggage">eg:10</span>
+                                        </el-form-item>
+                                    </el-col>
+
+                                </el-row>
+
+
+                                <el-row>
+
+                                    <el-col :span="8">
+                                        <el-form-item prop="bagw" label="Charged Baggage Weight" required>
+                                            <input @keyup.enter="keyEnter('#baggage2')" id="baggage1"
+                                                   :disabled=baggageDisabled
+                                                   @keyup.up="keyUp('#baggage0')"
+                                                   v-model="LbaggageForm.needChargeBaggage">
+                                            <span style="color: red; display:none" id="LbaggageFormneedChargeBaggage">eg:10</span>
+                                        </el-form-item>
+
+                                    </el-col>
+                                    <el-col :span="8">
+                                        <el-form-item prop="firstWeight"
+                                                      label="Actual Weight per Class for the First Piece" required>
+                                            <input id="baggage2" :disabled=baggageDisabled
+                                                   @keyup.up="keyUp('#baggage1')" @keyup.enter="keyEnter('#baggage3')"
+                                                   v-model="LbaggageForm.firstWeight">
+                                            <span style="color: red; display:none"
+                                                  id="LbaggageFormfirstWeight">eg:10</span>
+
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="8">
+                                        <el-form-item prop="firstMoner"
+                                                      label="Actual Amount per Class for the First Piece" required>
+                                            <input id="baggage3" :disabled=baggageDisabled
+                                                   @keyup.up="keyUp('#baggage2')"
+                                                   v-model="LbaggageForm.firstMoner"
+                                                   @keyup.enter="keyEnter('#baggage4')">
+                                            <span style="color: red; display:none" id="LbaggageFormfirstMoner">eg:100/100.12</span>
+                                        </el-form-item>
+                                    </el-col>
+
+                                </el-row>
+                            </el-col>
+
+                            <el-col :span="24">
+                                <el-col :span="8">
+                                    <el-form-item prop="univalence" label="Unit Price for Excess Baggage" required>
+                                        <input id="baggage4" @keyup.up="keyUp('#baggage3')" :disabled=baggageDisabled
+                                               @keyup.enter="keyEnter('#baggage5')"
+                                               v-model="LbaggageForm.univalence">
+                                        <span style="color: red; display:none"
+                                              id="LbaggageFormunivalence">eg:100/100.12</span>
+                                    </el-form-item>
+
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-form-item prop="overweight" label="Chargeable weight for excess baggage"
+                                                  required>
+                                        <input id="baggage5" :disabled=baggageDisabled @keyup.up="keyUp('#baggage4')"
+                                               v-model="LbaggageForm.overweight"
+                                               @keyup.enter="LbaggageCount('#baggage6')">
+                                        <span style="color: red; display:none" id="LbaggageFormoverweight">eg:10</span>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-form-item prop="gather" label="Total Charge for Baggage" required>
+                                        <input @blur="LbaggageCount" id="baggage6" @keyup.up="keyUp('#baggage5')"
+                                               :disabled=true v-model="LbaggageForm.gather"></input>
+                                    </el-form-item>
+                                </el-col>
+                                </el-row>
+                            </el-col>
+                        </el-form>
+                    </el-tab-pane>
+                </div>
+
+                <el-tab-pane label="(S)Charge for Seat Selection" name="Lseat">
+                    <el-col :span="24">
+                        <div id="seatId">
+                            <el-table :data="LseatData" stripe style="width: 100%">
+                                <el-table-column type="index"></el-table-column>
+                                <el-table-column prop="productNum" label="Product No."></el-table-column>
+                                <el-table-column prop="productName" label="Name"></el-table-column>
+                                <el-table-column prop="sn" label="Seat No."></el-table-column>
+                                <el-table-column prop="money" label="Amount">
+                                    <template scope="scope">
+                                        <el-col :span="24">
+                                            <input readonly @keyup.enter="seatCount(scope.$index, scope.row)"
+                                                   value="money"
+                                                   prop="money"
+                                                   v-model="scope.row.money" @keyup.up="seatUp(scope.$index)"></input>
+                                        </el-col>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                    </el-col>
+                </el-tab-pane>
+
+                <el-tab-pane label="(T)Charge for Special Baggage" name="LspBaggage">
+                    <el-col :span="24">
+                        <div id="BaggageId">
+                            <el-table :data="LspBaggageData" stripe style="width: 100%">
+                                <el-table-column type="index"></el-table-column>
+                                <el-table-column prop="productNum" label="Product No."></el-table-column>
+                                <el-table-column prop="productName" label="Name"></el-table-column>
+                                <el-table-column prop="productUnitPrice" label="Unit Price"></el-table-column>
+                                <el-table-column label="Piece" width="200px">
+                                    <template scope="scope">
+                                        <el-col :span="24">
+                                            <input size="small" prop="number" v-model="scope.row.number"
+                                                   @keyup.up="bagGageUp(scope.$index)"
+                                                   @keyup="BagTotal(scope.$index, scope.row)"
+                                                   @keyup.enter="BaggageCount(scope.$index, scope.row)"></input>
+                                        </el-col>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="money" label="Amount"></el-table-column>
+                            </el-table>
+                        </div>
+
+                    </el-col>
+
+                </el-tab-pane>
+
+                <el-tab-pane label="(Q)Other Charges" name="Lother">
+
+                    <el-form :rules="LotherRule" :inline="true" ref="LotherForm" :model="LotherForm"
+                             label-width="200px">
+                        <el-col :span="24">
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item prop="otherName" label="Item Name" required scope="scope">
+                                        <input id="other1" @keyup.enter="keyEnter('#other2')"
+                                               v-model="LotherForm.otherName">
+                                        <span style="color: red; display:none"
+                                              id="LotherFormotherName">Can't null</span>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item prop="otherUnivalence" label="Unit Price of Items" required>
+                                        <input id="other2" v-model="LotherForm.otherUnivalence"
+                                               @keyup.up="keyUp('#other1')"
+                                               @keyup="totalOther"
+                                               @keyup.enter="keyEnter('#other3')">
+                                        <span style="color: red; display:none"
+                                              id="LotherFormotherUnivalence">eg:1/1.23</span>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+
+                                <el-col :span="12">
+                                    <el-form-item prop="otherNum" label="Number of Items" required>
+                                        <input id="other3" v-model="LotherForm.otherNum"
+                                               @keyup.up="keyUp('#other2')"
+                                               @keyup="totalOther"
+                                               @keyup.enter="otherCount">
+                                        <span style="color: red; display:none" id="LotherFormotherNum">eg:10</span>
+                                    </el-form-item>
+
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item prop="otherMoney" label="Amount" required>
+                                        <input id="other4" :disabled="true" @keyup.up="keyUp('#other3')"
+                                               v-model="LotherForm.otherMoney" @blur="otherCount">
+                                    </el-form-item>
+                                </el-col>
+
+                            </el-row>
+                        </el-col>
+
+                    </el-form>
+
+                </el-tab-pane>
+            </el-tabs>
+        </el-col>
+    </el-col>
+    <el-card>
+
+        <el-row>
+            <el-col :span="5" :offset="6">
+                <el-button class="success" type="success" @click="onSubmit">Y.Confirm</el-button>
+            </el-col>
+            <el-col :span="6" :offset="6">
+                <el-button class="success" type="success" @click="helpMSG">P.Help</el-button>
+            </el-col>
+        </el-row>
+    </el-card>
+
+
+    <div id="helpMSG">
+        <el-card>
+
+            <el-row>
+                <el-col :span="8">
+                    Charge for Seat Selection:ALT+S
+                </el-col>
+
+                <el-col :span="6">
+                    Cursor Movement:ENTER
+                </el-col>
+
+                <el-col :span="4">
+                    Confirm:ALT+Y
+                </el-col>
+
+                <el-col :span="6">
+                    Order List:F1
+                </el-col>
+
+            </el-row>
+
+            <el-row>
+                <el-col :span="8">
+                    Charge for Special baggage:ALT+T
+                </el-col>
+                <el-col :span="6">
+                    Charge for Baggage:ALT+B
+                </el-col>
+                <el-col :span="4">
+                    Breakdown :F2
+                </el-col>
+                <el-col :span="6">
+                    Other Charges:ALT+Q
+                </el-col>
+
+
+            </el-row>
+            </el-form>
+        </el-card>
+    </div>
+
+
+    <el-dialog title="Confirmation Interface" :visible.sync="orderConfirmShow" size="tiny"
+               :close-on-click-modal="false">
+        <span>Are you sure of no more other charge items and processing to print?</span>
+
+        <span slot="footer" class="dialog-footer">
+            <el-button @keyup.right.native="keyEnter('.orderCancel')" class="orderConfirm"
+                       @click="orderConfirm">Confirm</el-button>
+            <el-button @keyup.left.native="keyEnter('.orderConfirm')" class="orderCancel"
+                       @click="orderConfirmShow = false">Cancel</el-button>
+        </span>
+    </el-dialog>
+
+
+    <el-dialog title="order detail to delete" :visible.sync="orderdetailDel" size="tiny" :close-on-click-modal="false">
+
+
+        <span>Your sure cancel this order？, Whether or not to continue?</span>
+
+        <span slot="footer" class="dialog-footer">
+            <el-button @keyup.right.native="keyEnter('.orderdetailCancel')" class="orderdetail" @click="orderdetail">Confirm</el-button>
+            <el-button @keyup.left.native="keyEnter('.orderdetail')" class="orderdetailCancel"
+                       @click="orderdetailDel = false">Cancel</el-button>
+
+        </span>
+    </el-dialog>
+
+
+    <el-dialog title="Order confirmation" :visible.sync="confirmSum" size="tiny" :close-on-click-modal="false">
+        <span>Do you charge for confirm to submit this information?</span>
+
+        <span slot="footer" class="dialog-footer">
+            <el-button @keyup.right.native="keyEnter('.confirmSumCancel')" class="confirmSum" @click="orderConfirmSum">Confirm</el-button>
+            <el-button @keyup.left.native="keyEnter('.confirmSum')" class="confirmSumCancel"
+                       @click="confirmSum = false">Cancel</el-button>
+        </span>
+    </el-dialog>
+
+
+</div>
+<!--<script th:src="@{/js/charge/hotkeys.js}"></script>-->
+<script th:src="@{/js/charge/shortcut.js}"></script>
+<script th:src="@{/js/charge/charge.js}"></script>
+</body>
+</html>

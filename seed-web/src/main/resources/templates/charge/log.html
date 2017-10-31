@@ -1,0 +1,68 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<script th:src="@{/js/charge/log.js}"></script>
+<div id="log">
+    <el-col :span="24">
+        <el-card>
+
+            <el-form ref="logForm" :model="logForm" label-width="120px">
+
+                <el-row>
+                    <el-col :span="8">
+                        <el-form-item label="Staff ID of Operator:">
+                            <el-input v-model="logForm.name"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="Passenger Name:">
+                            <el-input v-model="logForm.passenger"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="4" :offset="4">
+                        <el-button @click="handleCurrentChange" type="primary">Query</el-button>
+                    </el-col>
+                </el-row>
+            </el-form>
+        </el-card>
+    </el-col>
+
+    <el-col :span="24">
+        <el-card class="box-card">
+            <el-table :data="logData" stripe style="width: 100%">
+
+                <el-table-column type="index" width="55px"></el-table-column>
+                <el-table-column prop="name" label="Staff ID"></el-table-column>
+                <el-table-column prop="fid" label="Passenger Sign"></el-table-column>
+                <el-table-column prop="fi" label="Flight Sign"></el-table-column>
+                <el-table-column prop="ip" label="Handle IP"></el-table-column>
+                <el-table-column :formatter="dateFormat" prop="date" label="Time"></el-table-column>
+                <el-table-column prop="passenger" label="Passenger Name"></el-table-column>
+                <el-table-column  label="Handle Message">
+                    <template scope="scope">
+                        <el-popover trigger="hover" placement="top">
+                            <p>{{ scope.row.message }}</p>
+                            <div slot="reference" class="name-wrapper">
+                                <el-tag>查看信息</el-tag>
+                            </div>
+                        </el-popover>
+                    </template>
+                </el-table-column>
+
+                <el-table-column prop="fs" label="Routes Message"></el-table-column>
+
+            </el-table>
+            <el-pagination
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-size="8"
+                    layout=" prev, pager, next"
+                    :total="total">
+            </el-pagination>
+        </el-card>
+    </el-col>
+
+</div>
+</html>
+
+

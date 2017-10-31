@@ -1,0 +1,123 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>printPerson</title>
+
+    <link rel="stylesheet" th:href="@{/lib/elementui/lib/theme-default/index.css}"/>
+
+    <script th:src="@{/lib/vue/vue.js}"></script>
+    <script th:src="@{/lib/elementui/lib/index.js}"></script>
+    <script th:src="@{/lib/jquery/jquery-3.2.1.min.js}"></script>
+    <style type="text/css">
+        @media print {
+            .not-print{
+                display: none;
+            }
+        }
+    </style>
+</head>
+<div id="printPerson" style="width: 1200px;">
+    <el-table :data="printData" stripe style="width: 100%;margin-top: 10px;">
+        <el-table-column type="index" width="55px;"></el-table-column>
+        <el-table-column prop="orderNum" label="order No."></el-table-column>
+        <el-table-column prop="fi" label="flight No."></el-table-column>
+        <el-table-column prop="name" label="name"></el-table-column>
+        <el-table-column prop="licenseNo" label="ID"></el-table-column>
+        <el-table-column prop="productNum" label="Product No."></el-table-column>
+        <el-table-column prop="totalMoney" align="right" :formatter="formatPersonMoney" label="Amount"></el-table-column>
+        <el-table-column prop="paymentType" :formatter="formatPayment" label="payment type"></el-table-column>
+        <el-table-column prop="createdBy" label="Staff ID."></el-table-column>
+        <el-table-column prop="createdDt" :formatter="formatDate" label="date"></el-table-column>
+        <el-table-column prop="type" :formatter="formatStatus" label="status"></el-table-column>
+    </el-table>
+    <el-button @click="print" class="not-print" style="width: 150px;" type="primary">(P)print</el-button>
+</div>
+<input style="display: none;" id="pData" th:value="${printData}" />
+<script>
+    Date.prototype.format = function(fmt) {
+        var o = {
+            "M+" : this.getMonth()+1,                 //月份
+            "d+" : this.getDate(),                    //日
+            "h+" : this.getHours(),                   //小时
+            "m+" : this.getMinutes(),                 //分
+            "s+" : this.getSeconds(),                 //秒
+            "q+" : Math.floor((this.getMonth()+3)/3), //季度
+            "S"  : this.getMilliseconds()             //毫秒
+        };
+        if(/(y+)/.test(fmt)) {
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        }
+        for(var k in o) {
+            if(new RegExp("("+ k +")").test(fmt)){
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+            }
+        }
+        return fmt;
+    };
+    new Vue({
+        el: '#printPerson',
+        data: function () {
+            return{
+                printData: []
+            }
+        },
+        created: function () {
+            this.printData=eval("("+$("#pData").val()+")");
+        },
+        methods: {
+            print: function () {
+               window.print();
+            },
+            formatPersonMoney: function (row, column) {
+                var money = new Number(row.totalMoney);
+                return this.moneyFormat(money);
+            },
+            moneyFormat: function (money) {
+                var tempMoney = money.toFixed(2);
+                var tempArr = tempMoney.split('.');
+                var temp = tempArr[0];
+                var endNum = '.' + tempArr[1];
+                var result = '';
+                while (temp.length > 3) {
+                    result = ',' + temp.slice(-3) + result;
+                    temp = temp.slice(0, temp.length - 3);
+                }
+                if (temp) {
+                    result = temp + result;
+                }
+                result += endNum;
+
+                return result;
+            },
+            formatDate: function (row, column) {
+                return new Date(row.createdDt).format("yyyy-MM-dd hh:mm:ss");
+            },
+            formatPayment: function (row, column) {
+                var type = row.paymentType;
+                if (type == '1') {
+                    return 'CASH';
+                } else if (type == '2') {
+                    return 'POS';
+                } else if (type == '3') {
+                    return 'POS(G)';
+                }
+            },
+            formatStatus: function (row, column) {
+                var status = row.type;
+                if (status == 'Y') {
+                    return 'Y';
+                } else if (status == 'N') {
+                    return 'N';
+                } else if (status == 'Refund') {
+                    return 'Refund';
+                } else if (status == 'C') {
+                    return 'C';
+                }
+            }
+        }
+    });
+</script>
+</html>

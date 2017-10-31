@@ -1,0 +1,174 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>printFlight</title>
+
+    <link rel="stylesheet" th:href="@{/lib/elementui/lib/theme-default/index.css}"/>
+
+    <script th:src="@{/lib/vue/vue.js}"></script>
+    <script th:src="@{/lib/elementui/lib/index.js}"></script>
+    <script th:src="@{/lib/jquery/jquery-3.2.1.min.js}"></script>
+
+    <style type="text/css">
+        #flight {
+            border-collapse: collapse;
+            margin-left: 40px;
+        }
+        #flight, #flight th, #flight td{
+            border:1px solid #00CCCC;
+        }
+        .pretwo{
+            width: 200px;
+            height: 30px;
+        }
+        .endtd{
+            width: 100px;
+            height: 30px;
+            text-align: center;
+        }
+        .moneytd{
+            width: 100px;
+            height: 30px;
+            text-align: right;
+        }
+        @media print {
+            .not-print{
+                display: none;
+            }
+        }
+    </style>
+</head>
+<div id="printFlight">
+    <table id="flight">
+        <tr>
+            <th class="pretwo">order No.</th>
+            <th class="pretwo">Product type+Information</th>
+            <th class="endtd">order status</th>
+            <th class="endtd">Amount</th>
+            <th class="endtd">payment type</th>
+            <th class="endtd">total</th>
+        </tr>
+        <template v-for="( item, index) in flightInfo">
+            <tr>
+                <td class="pretwo">{{item.orderNum}}</td>
+                <td class="pretwo">{{item.typeDetail}}</td>
+                <td class="endtd">
+                    <template v-if="item.status=='Y'">
+                        <span style="color: #ff1639;">Y</span>
+                    </template>
+                    <template v-if="item.status=='N'">
+                        N
+                    </template>
+                    <template v-if="item.status=='Refund'">
+                        Refund
+                    </template>
+                    <template v-if="item.status=='C'">
+                        C
+                    </template>
+                </td>
+                <td class="moneytd">{{flightFormatMoney(item.money)}}</td>
+                <td class="endtd" :rowspan="item.rowNum" v-if="item.haveType==1">
+                    <template v-if="item.paymentType=='1'">
+                        CASH
+                    </template>
+                    <template v-if="item.paymentType=='2'">
+                        POS
+                    </template>
+                    <template v-if="item.paymentType=='3'">
+                        POS(G)
+                    </template>
+                </td>
+                <!--<td v-if="item.haveType==0"></td>-->
+                <td class="moneytd" :rowspan="item.rowNum" v-if="item.haveType==1">{{flightFormatMoney(item.totalMoney)}}</td>
+            </tr>
+        </template>
+        <template v-for="(list,index) in flightSubtotal">
+            <tr>
+                <td class="pretwo"><template v-if="index==0">subtotal</template></td>
+                <td class="pretwo">{{list.productType}}</td>
+                <td class="endtd"></td>
+                <td class="endtd"></td>
+                <td class="endtd">
+                    <template v-if="list.paymentType=='1'">
+                        CASH
+                    </template>
+                    <template v-if="list.paymentType=='2'">
+                        POS
+                    </template>
+                    <template v-if="list.paymentType=='3'">
+                        POS(G)
+                    </template>
+                </td>
+                <td class="moneytd">{{flightFormatMoney(list.totalMoney)}}</td>
+            </tr>
+        </template>
+        <template v-for="(list,index) in flightTotal">
+            <tr>
+                <td class="pretwo"><template v-if="index==0">total</template></td>
+                <td class="pretwo">{{list.productType}}</td>
+                <td class="endtd"></td>
+                <td class="endtd"></td>
+                <td class="endtd"></td>
+                <td class="moneytd">{{flightFormatMoney(list.totalMoney)}}</td>
+            </tr>
+        </template>
+    </table>
+    <el-button @click="print" class="not-print" style="width: 150px;" type="primary">print</el-button>
+</div>
+<input style="display: none;" id="pData" th:value="${printData}" />
+<script>
+
+    new Vue({
+        el: '#printFlight',
+        data: function () {
+            return{
+                printData: [],
+                flightInfo:[
+
+                ],
+                flightSubtotal: [
+
+                ],
+                flightTotal: [
+
+                ]
+            }
+        },
+        created: function () {
+            this.printData=eval("("+$("#pData").val()+")");
+            this.flightInfo = this.printData.flightInfo;
+            this.flightSubtotal = this.printData.flightSubtotal;
+            this.flightTotal = this.printData.flightTotal;
+        },
+        methods: {
+            print: function () {
+                window.print();
+            },
+            flightFormatMoney: function (money) {
+                var mon = new Number(money);
+                return this.moneyFormat(mon);
+            },
+            moneyFormat: function (money) {
+                var tempMoney = money.toFixed(2);
+                var tempArr = tempMoney.split('.');
+                var temp = tempArr[0];
+                var endNum = '.' + tempArr[1];
+                var result = '';
+                while (temp.length > 3) {
+                    result = ',' + temp.slice(-3) + result;
+                    temp = temp.slice(0, temp.length - 3);
+                }
+                if (temp) {
+                    result = temp + result;
+                }
+                result += endNum;
+
+                return result;
+            }
+        }
+    });
+</script>
+</html>

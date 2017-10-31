@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<title th:if="${showPage!=null}">SEED</title>
+
+<head th:if="${showPage!=null}" th:include="header"/>
+
+<body>
+
+<style type="text/css">
+    #flight {
+        border-collapse: collapse;
+        margin-left: 40px;
+    }
+    #flight, #flight th, #flight td{
+        border:1px solid #00CCCC;
+    }
+    .pretwo{
+        width: 200px;
+        height: 30px;
+    }
+    .endtd{
+        width: 100px;
+        height: 30px;
+        text-align: center;
+    }
+    .moneytd{
+        width: 100px;
+        height: 30px;
+        text-align: right;
+    }
+
+</style>
+
+
+<div id="report">
+    <input id="showPageNum" type="hidden" th:value="${showPage}">
+    <input id="name" type="hidden" th:value="${name}">
+    <el-tabs v-model="activeName" type="border-card">
+        <el-tab-pane label="assist product sell collect" name="collect">
+            <el-form ref="form" :model="collect" label-width="110px">
+                <el-row>
+                    <el-col :span="5">
+                        <el-form-item label="Flight No.">
+                            <el-input v-model="collect.fi"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-form-item label="Staff ID.">
+                            <el-input v-model="collect.createdBy"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-form-item label="Product Type">
+                            <el-select v-model="collect.productType" placeholder="All">
+                                <el-option
+                                        v-for="item in typeOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="5">
+                        <el-form-item label="Group">
+                            <el-select v-model="collect.group">
+                                <el-option
+                                        v-for="item in groupOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-form-item label="Order Status">
+                            <el-select v-model="collect.orderStatus">
+                                <el-option
+                                        v-for="item in statusOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="3" :offset="2">
+                        <el-button @click="queryListCollect" style="width: 150px;" type="primary">Query</el-button>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button @click="printListCollect" style="width: 150px;" type="primary">Print Preview</el-button>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button @click="exportListCollect" style="width: 150px;" type="primary">Export</el-button>
+                    </el-col>
+                </el-row>
+            </el-form>
+
+            <el-table :data="collectData" :summary-method="getSummaries" show-summary stripe style="width: 100%">
+                <el-table-column type="index" width="55px"></el-table-column>
+                <el-table-column v-if="showCreatedBy == true" prop="createBy" label="staff id."></el-table-column>
+                <el-table-column prop="productType" label="product type"></el-table-column>
+                <el-table-column prop="productNum" label="product No."></el-table-column>
+                <el-table-column prop="groupMoney" align="right" :formatter="formatCollectMoney" label="Amount"></el-table-column>
+            </el-table>
+
+        </el-tab-pane>
+
+
+        <el-tab-pane label="assist product flight sell detail" name="flight">
+
+            <el-form ref="form" :model="flight" label-width="110px">
+                <el-row>
+                    <el-col :span="5">
+                        <el-form-item label="order No.">
+                            <el-input v-model="flight.orderNum"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-form-item label="flight No.">
+                            <el-input v-model="flight.fiDate" placeholder="Example:IJ101123MAR"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-form-item label="order status">
+                            <el-select v-model="flight.status">
+                                <el-option
+                                        v-for="item in flightOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8" :offset="1">
+                        <el-button @click="queryFlight" type="primary">Query</el-button>
+                        <el-button @click="printFlight" type="primary">Print Preview</el-button>
+                        <el-button @click="exportFlight" type="primary">Export</el-button>
+                    </el-col>
+                </el-row>
+            </el-form>
+
+
+            <table id="flight">
+                <tr>
+                    <th class="pretwo">order No.</th>
+                    <th class="pretwo">Product type+Information</th>
+                    <th class="endtd">order status</th>
+                    <th class="endtd">Amount</th>
+                    <th class="endtd">payment type</th>
+                    <th class="endtd">total</th>
+                </tr>
+                <template v-for="( item, index) in flightInfo">
+                        <tr>
+                            <td class="pretwo">{{item.orderNum}}</td>
+                            <td class="pretwo">{{item.typeDetail}}</td>
+                            <td class="endtd">
+                                <template v-if="item.status=='Y'">
+                                    <span style="color: #ff1639;">Y</span>
+                                </template>
+                                <template v-if="item.status=='N'">
+                                    N
+                                </template>
+                                <template v-if="item.status=='Refund'">
+                                    Refund
+                                </template>
+                                <template v-if="item.status=='C'">
+                                    C
+                                </template>
+                            </td>
+                            <td class="moneytd">{{ flightFormatMoney(item.money) }}</td>
+                            <td class="endtd" :rowspan="item.rowNum" v-if="item.haveType==1">
+                                <template v-if="item.paymentType=='1'">
+                                    CASH
+                                </template>
+                                <template v-if="item.paymentType=='2'">
+                                    POS
+                                </template>
+                                <template v-if="item.paymentType=='3'">
+                                    POS(G)
+                                </template>
+                            </td>
+                            <!--<td v-if="item.haveType==0"></td>-->
+                            <td class="moneytd" :rowspan="item.rowNum" v-if="item.haveType==1">{{ flightFormatMoney(item.totalMoney) }}</td>
+                        </tr>
+                </template>
+                <template v-for="(list,index) in flightSubtotal">
+                    <tr>
+                       <td class="pretwo"><template v-if="index==0">subtotal</template></td>
+                       <td class="pretwo">{{list.productType}}</td>
+                       <td class="endtd"></td>
+                       <td class="endtd"></td>
+                       <td class="endtd">
+                           <template v-if="list.paymentType=='1'">
+                               CASH
+                           </template>
+                           <template v-if="list.paymentType=='2'">
+                               POS
+                           </template>
+                           <template v-if="list.paymentType=='3'">
+                               POS(G)
+                           </template>
+                       </td>
+                       <td class="moneytd">{{ flightFormatMoney(list.totalMoney) }}</td>
+                    </tr>
+                </template>
+                <template v-for="(list,index) in flightTotal">
+                    <tr>
+                        <td class="pretwo"><template v-if="index==0">total</template></td>
+                        <td class="pretwo">{{list.productType}}</td>
+                        <td class="endtd"></td>
+                        <td class="endtd"></td>
+                        <td class="endtd"></td>
+                        <td class="moneytd">{{ flightFormatMoney(list.totalMoney) }}</td>
+                    </tr>
+                </template>
+            </table>
+        </el-tab-pane>
+
+
+        <el-tab-pane label="assist product person sell detail" name="person">
+            <el-form ref="form" :model="person" label-width="110px">
+                <el-row>
+                    <el-col :span="5">
+                        <el-form-item label="order No.">
+                            <el-input v-model="person.orderNum"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-form-item label="flight No.">
+                            <el-input v-model="person.fi"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-form-item label="name">
+                            <el-input v-model="person.name"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="5">
+                        <el-form-item label="ID">
+                            <el-input v-model="person.licenseNo"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-form-item label="Staff ID.">
+                            <el-input v-model="person.createdBy"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-form-item label="order status">
+                            <el-select v-model="person.type">
+                                <el-option
+                                        v-for="item in personOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="5" :offset="2">
+                        <el-button @click="queryListPerson" style="width: 150px;" type="primary">(Q)Query</el-button>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="3">
+                        <el-button @click="queryDetail" size="small" type="primary" style="width: 150px;">(M)Check the Detail</el-button>
+                    </el-col>
+                </el-row>
+            </el-form>
+
+            <el-table ref="person" :data="personData" stripe style="width: 100%;margin-top: 10px;" @row-click="rowClick" highlight-current-row>
+                <el-table-column type="index" width="55px;" ></el-table-column>
+                <el-table-column prop="orderNum"  label="order No."></el-table-column>
+                <el-table-column prop="fi"  label="flight No."></el-table-column>
+                <el-table-column prop="name" label="name"></el-table-column>
+                <el-table-column prop="licenseNo"  label="ID"></el-table-column>
+                <el-table-column prop="productNum"  label="Product No."></el-table-column>
+                <el-table-column prop="totalMoney" align="right" :formatter="formatPersonMoney" label="Amount"></el-table-column>
+                <el-table-column prop="paymentType" :formatter="formatPayment" label="payment type"></el-table-column>
+                <el-table-column prop="createdBy" label="Staff ID."></el-table-column>
+                <el-table-column prop="createdDt"  :formatter="formatDate" label="date" ></el-table-column>
+                <el-table-column prop="type" :formatter="formatStatus" label="status"></el-table-column>
+            </el-table>
+
+            <el-form>
+                <!--<el-row>-->
+                    <!--<div style="margin-top: 10px;">-->
+                    <!--移动:Enter  查询:ALT+Q  选中:ALT+S  查看明细:ALT+M  返回焦点:ALT+B-->
+                    <!--</div>-->
+                <!--</el-row>-->
+                <el-row>
+                    <div style="margin-top: 10px;">
+                    <el-col :span="3">
+                        <el-button @click="exportPerson" type="primary" size="small" style="width: 150px;">(E)Export</el-button>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button @click="printPerson" type="primary" size="small" style="width: 150px;">(P)Print Preview</el-button>
+                    </el-col>
+                    </div>
+                </el-row>
+            </el-form>
+        </el-tab-pane>
+    </el-tabs>
+</div>
+<script th:if="${showPage!=null}" th:src="@{/js/charge/shortcut.js}"></script>
+<script th:src="@{/js/charge/report.js}"></script>
+
+</body>
+</html>

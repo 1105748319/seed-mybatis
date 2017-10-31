@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.3.RELEASE</version>
+    </parent>
+
+    <groupId>com.czy</groupId>
+    <artifactId>seed-dependencies</artifactId>
+    <version>1.0.1</version>
+    <packaging>pom</packaging>
+    <name>Seed Dependencies</name>
+    <description>Seed Dependencies</description>
+    <organization>
+        <name>CZY Technical Committee</name>
+    </organization>
+    <developers>
+        <developer>
+            <id>panlc</id>
+            <name>PanLeChun</name>
+            <email>003914@czy.inner.com</email>
+            <organization>Technical Committee</organization>
+            <roles>
+                <role>Project lead</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <properties>
+        <spring.boot.version>1.5.3.RELEASE</spring.boot.version>
+        <mybatis.version>3.4.0</mybatis.version>
+        <mybatis-spring.version>1.3.0</mybatis-spring.version>
+        <pagehelper.version>5.0.0</pagehelper.version>
+        <druid.version>1.1.2</druid.version>
+        <logback.version>1.1.11</logback.version>
+        <freemarker.version>2.3.23</freemarker.version>
+        <persistence-api.version>1.0</persistence-api.version>
+        <java.version>1.8</java.version>
+    </properties>
+
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.persistence</groupId>
+                <artifactId>persistence-api</artifactId>
+                <version>${persistence-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>${mybatis-spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper</artifactId>
+                <version>${pagehelper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.41</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Internal Releases</name>
+            <url>http://10.131.0.164:8081/nexus/content/repositories/thirdparty</url>
+        </repository>
+        <snapshotRepository>
+            <id>releases</id>
+            <name>Internal Releases</name>
+            <url>http://10.131.0.164:8081/nexus/content/repositories/thirdparty</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

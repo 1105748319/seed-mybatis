@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <link rel="stylesheet" href="../lib/elementui/lib/theme-default/index.css"/>
+
+    <!-- 引入组件库 -->
+    <!-- 先引入 Vue -->
+    <script src="../lib/jquery/jquery-3.2.1.min.js"></script>
+    <script src="../lib/vue/vue.js"></script>
+    <script src="../lib/vue/vue-resource.min.js"></script>
+    <script src="../lib/vue/vue-router.js"></script>
+    <script src="../lib/elementui/lib/index.js"></script>
+    <title>Title</title>
+</head>
+
+
+<body>
+
+<el-form id="dt-grid" :model="formData" :rules="rules" ref="formData" label-width="110px">
+    <el-card class="box-card">
+        <div slot="header" class="clearfix">
+            <span style="line-height: 36px;">客舱信息配置</span>
+            <el-button type="primary" @click="submitPcForm('formData')">提交</el-button>
+        </div>
+        <div v-for="(passengerCabin, index) in formData.passengerCabins">
+            <el-row>
+                <el-col :span="6">
+                    <el-form-item :label="'客舱'"
+                                  :prop="'passengerCabins.' + index + '.name'"
+                                  :key="passengerCabin.key"
+                                  >
+                        <el-input size="small" v-model="passengerCabin.name"></el-input>
+                        <el-button @click="pcDelClick(passengerCabin)" type="primary"
+                                   icon="delete"></el-button>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </div>
+        <el-button @click="pcAddClick(passengerCabins)" type="primary" icon="plus"></el-button>
+    </el-card>
+</el-form>
+
+
+</body>
+
+
+<script types="text/javascript">
+
+    new Vue({
+        el: "#dt-grid",
+        data: function () {
+            return {
+                tableData: this.loadData(),
+                form: {
+                    name: '',
+                    region: '',
+                    date1: '',
+                    date2: '',
+                    delivery: false,
+                    type: [],
+                    resource: '',
+                    desc: ''
+                },
+                galleyGoods: [{}],
+                formData: {
+                    passengerCabins: [{}]
+                },
+                rules: {
+                    //name: [{validator: validatePass2, trigger: 'blur'}]
+                    name: [{required: true, message: '域名不能为空', trigger: 'blur,change'}]
+                }
+            }
+        },
+        methods: {
+            loadData: function () {
+                var data = {};//组装的data数据
+                $.ajax({
+                    url: "/cfg/flightTypeConfig/list",
+                    data: {},
+                    type: 'POST',
+                    async: false,//需要添加这个参数使用同步功能
+                    success: function (result) {
+                        data = result;
+                    }
+                });
+                return data;
+            },
+            rowClick: function (row, event, column) {
+                debugger;
+                for (var key in row) {
+                    //alert(row.id);
+                }
+            },
+            pcAddClick: function () {
+                this.formData.passengerCabins.push({key: Date.now()});
+            },
+            pcDelClick: function (passengerCabin) {
+                var indexOf = this.formData.passengerCabins.indexOf(passengerCabin);
+                if (indexOf !== -1 && indexOf !== 0) {
+                    this.formData.passengerCabins.splice(indexOf, 1)
+                } else {
+
+                }
+            },
+            submitPcForm: function (passengerForm) {
+                this.$refs[passengerForm].validate(function (result) {
+                    if (result) {
+                        debugger
+                        var params = JSON.stringify(this.formData.passengerCabins);
+                        debugger
+                        $.ajax({
+                            url: "/cfg/passengerCabin/addList",
+                            data: params,
+                            type: 'POST',
+                            contentType: 'application/json;charset=UTF-8',
+                            success: function (result) {
+                                alert(result);
+                            }
+                        });
+                    } else {
+
+                    }
+                });
+
+            }
+        }
+    })
+
+
+    var validatePass2 = function (rule, value, callback) {
+        if (value === '') {
+            callback(new Error('请再次输入密码'));
+        } else {
+            callback();
+        }
+    }
+
+</script>
+
+</html>

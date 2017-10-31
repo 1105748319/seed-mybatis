@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<title>SEED</title>
+
+<head th:include="header"/>
+
+<body>
+<div id="main_contain">
+    <el-row class="container">
+        <el-col :span="24" class="el-col el-col-24 header">
+            <el-col :span="10" class="el-col el-col-10 logo logo-width" :class="collapsed?'logo-collapse-width':'logo-width'">
+                {{collapsed ? '' : sysName}}
+            </el-col>
+            <el-col :span="10">
+                <div class="tools" @click.prevent="collapse">
+                    <i class="el-icon-menu "></i>
+                </div>
+            </el-col>
+            <el-col :span="4" class="userinfo">
+                <el-button  @click.native="logout" type="primary" > Log out</el-button>
+
+
+            </el-col>
+        </el-col>
+        <!--</el-row>-->
+        <!--<el-row>-->
+        <el-col :span="24" class="main">
+            <aside :class="collapsed ? 'menu-collapsed' : 'menu-expanded'">
+                <!--导航菜单-折叠前-->
+                <el-menu class="el-menu-vertical-demo" unique-opened v-show="!collapsed">
+                    <menu-item :item="item" v-for="item in menuList" :key="item.name"></menu-item>
+                </el-menu>
+
+                <!--导航菜单-折叠后-->
+                <ul class="el-menu el-menu-vertical-demo collapsed" v-show="collapsed" ref="menuCollapsed">
+                    <menu-item-hide :item="item" v-for="item in menuList" :key="item.name"></menu-item-hide>
+                </ul>
+            </aside>
+
+            <section class="content-container">
+                <div class="grid-content bg-purple-light">
+                    <el-col :span="24" class="breadcrumb-container">
+                        <strong class="title">{{title}}</strong>
+                        <el-breadcrumb separator="/" class="breadcrumb-inner">
+                        </el-breadcrumb>
+                    </el-col>
+                    <el-col :span="24" class="content-wrapper">
+                        <!--<iframe id="mainFrame" name="iframepage" scrolling="yes" frameborder="0"-->
+                                <!--style="width:100%;min-height:650px;overflow:visible;background:#fff;"-->
+                                <!--:src="contentUrl"></iframe>-->
+                    </el-col>
+                </div>
+            </section>
+
+        </el-col>
+
+    </el-row>
+
+</div>
+<script th:src="@{/js/common/index.js}"></script>
+<script th:src="@{/js/charge/shortcut.js}"></script>
+</body>
+</html>

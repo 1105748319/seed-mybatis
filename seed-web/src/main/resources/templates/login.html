@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <link rel="stylesheet" th:href="@{/lib/elementui/lib/theme-default/index.css}"/>
+    <script th:src="@{/lib/vue/vue.js}"></script>
+    <script th:src="@{/lib/elementui/lib/index.js}"></script>
+    <script th:src="@{/lib/vue/vue-resource.min.js}"></script>
+    <title>登录</title>
+</head>
+
+<style type="text/css">
+    .login-box {
+        width: 295px;
+        height: 300px;
+        padding: 13px 14px 15px;
+        top: 25%;
+        left: 55%;
+        right: 30%;
+        text-align: left;
+        position: absolute;
+        z-index: 2;
+        border-left: 1px solid #e8e8e8;
+        border-right: 1px solid #e8e8e8;
+        border-bottom: 1px solid #e8e8e8;
+        border-top: 2px solid #f40;
+        background-color: #fafafa;
+    }
+
+    .login-input {
+        margin-top: 30px;
+    }
+
+    .login-btn {
+        width: 100%;
+        background: #f40;
+        border-color: #f40;
+        font-size: 16px;
+        font-weight: 700;
+        font-family: "PingFang SC";
+    }
+
+    .login-form {
+        /*padding-top: 40px;*/
+    }
+
+    .login-infp {
+        color:#f40;
+    }
+</style>
+
+<body>
+
+<div class="login-box">
+
+    <el-form class="login-form" :model="ruleForm" :rules="rules" ref="ruleForm" th:action="@{/login}" method="post">
+        <el-form-item class="login-infp">
+            <div th:if="${param.logout}">
+                <i class="el-icon-circle-check"/>您已注销成功
+            </div>
+            <div th:if="${param.error}">
+                <i class="el-icon-circle-check"/>用户名或密码错
+            </div>
+        </el-form-item>
+        <el-form-item prop="username">
+            <el-input placeholder="Please enter the account" v-model="ruleForm.username" name="username">
+                <template slot="prepend"><i class="el-icon-edit"></i></template>
+            </el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+            <el-input placeholder="Please enter the password" type="password" v-model="ruleForm.password" name="password">
+                <template slot="prepend"><i class="el-icon-edit"></i></template>
+            </el-input>
+        </el-form-item>
+        <el-form-item>
+            <div class="login-input">
+                <el-button class="login-btn" type="primary" native-type="submit" >
+                    LOGIN
+                </el-button>
+            </div>
+        </el-form-item>
+    </el-form>
+</div>
+
+</body>
+
+<script th:src="@{/js/common/login.js}"></script>
+
+</html>

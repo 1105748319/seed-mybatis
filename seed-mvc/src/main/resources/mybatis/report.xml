@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czy.seed.mvc.charge.config.mapper.ReportMapper">
+    <select id="selectCollectGroupNum" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			t.CREATED_BY as createBy,
+			d.PRODUCT_TYPE as productType,
+			count(1) as productNum,
+			sum(d.MONEY) as groupMoney,
+			case WHEN d.PRODUCT_TYPE='BAGGAGE(OTHERS)' OR d.PRODUCT_TYPE='OTHERS'  then sum(d.UNIT) END as unitSum
+		FROM
+			tbl_order t,
+			tbl_order_detail d
+		WHERE
+			t.ID = d.ORDER_ID
+			<if test="fi!=null and fi != ''">
+				AND t.fi = #{fi}
+			</if>
+			<if test="createdBy!=null and createdBy != ''">
+				AND t.CREATED_BY=#{createdBy}
+			</if>
+			<if test="productType!=null and productType != ''">
+				AND d.product_type=#{productType}
+			</if>
+			<if test="orderStatus != null and orderStatus!=''">
+				AND t.TYPE=#{orderStatus}
+			</if>
+			<if test="group==1">
+				GROUP BY t.CREATED_BY,d.PRODUCT_TYPE
+			</if>
+			<if test="group!=1">
+				GROUP BY d.PRODUCT_TYPE
+			</if>
+			ORDER BY t.CREATED_BY
+	</select>
+
+    <select id="selectCollectGroupType" resultType="java.util.Map">
+        select product_type from tbl_product group by product_type
+    </select>
+
+	<select id="selectPersonDetail" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			id as id,
+			ORDER_NUM AS orderNum,
+			fi AS fi,
+			NAME AS name,
+			LICENSE_NO AS licenseNo,
+			(SELECT count(1) FROM tbl_order_detail WHERE order_id = (SELECT id FROM tbl_order WHERE ORDER_NUM = t.ORDER_NUM LIMIT 1)) AS productNum,
+			sum(RECEIVABLE_AMOUNT) AS totalMoney,
+			PAYMENT_TYPE AS paymentType,
+			CREATED_BY AS createdBy,
+			CREATED_DT AS createdDt,
+			type AS type
+		FROM
+			tbl_order t
+		WHERE 1=1
+		<if test="orderNum!=null and orderNum!=''">
+			AND ORDER_NUM LIKE CONCAT('%',#{orderNum},'%')
+		</if>
+		<if test="fi!=null and fi!=''">
+			AND fi = #{fi}
+		</if>
+		<if test="name!=null and name!=''">
+			AND NAME LIKE CONCAT('%',#{name},'%')
+		</if>
+		<if test="licenseNo!=null and licenseNo!=''">
+			AND LICENSE_NO LIKE CONCAT('%',#{licenseNo},'%')
+		</if>
+		<if test="type!=null and type!=''">
+			AND TYPE = #{type}
+		</if>
+		<if test="createdBy!=null and createdBy!=''">
+			AND CREATED_BY = #{createdBy}
+		</if>
+		<if test="startTime != null and startTime != ''">
+			AND CREATED_DT BETWEEN #{startTime} AND #{endTime}
+		</if>
+		GROUP BY
+			order_num
+	</select>
+
+
+	<select id="selectFlightDetail" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+			d.PRODUCT_TYPE AS productType,
+			d.MONEY AS money,
+			d.UNIT AS unit,
+			t.ORDER_NUM AS orderNum,
+			t.TYPE AS status,
+			t.PAYMENT_TYPE AS paymentType,
+			t.RECEIVABLE_AMOUNT as totalMoney
+		FROM
+			tbl_order t,
+			tbl_order_detail d
+		WHERE
+			t.id = d.ORDER_ID
+			<if test="orderNum != null and orderNum != ''">
+				AND ORDER_NUM = #{orderNum}
+			</if>
+			<if test="fi != null and fi != ''">
+				AND fi = #{fi}
+			</if>
+			<if test="status != null and status != ''">
+				AND t.TYPE = #{status}
+			</if>
+		ORDER BY
+			t.ORDER_NUM;
+	</select>
+</mapper>

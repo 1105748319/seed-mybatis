@@ -1,0 +1,79 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<script th:src="@{/js/charge/rulebind.js}"></script>
+<div id="rulebind" style="font-family: 'Times New Roman';font-size: 11pt;">
+
+    <el-card>
+
+        <el-form ref="form" :model="editForm" ref="ruleForm" :rules="rulesProduct" label-width="120px">
+
+            <el-row>
+                <el-col :span="5">
+                    <el-form-item label="product No.">
+                        <el-input v-model="editForm.productNum" :disabled="true"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-form-item label="product name">
+                        <el-input v-model="editForm.productName" :disabled="true"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-form-item label="product type">
+                        <el-input v-model="editForm.productType" :disabled="true"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row >
+                <el-col :span="5">
+                    <el-form-item label="flight line" prop="fs">
+                        <el-input v-model="editForm.fs"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-form-item label="rules name" prop="rulesName">
+                        <el-input :disabled="editForm.productType == 'BAGGAGE(OTHERS)'" v-model="editForm.rulesName"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-form-item label="rules value" prop="rulesVal">
+                        <el-input v-model="editForm.rulesVal"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-button @click="saveRule" type="primary" style="width:150px;margin-left: 70px;"> save rule</el-button>
+                </el-col>
+            </el-row>
+        </el-form>
+    </el-card>
+
+    <el-card class="box-card">
+        <el-table :data="tableData" highlight-current-row
+                  @current-change="queryRule"
+                  stripe style="width: 100%">
+            <el-table-column type="index" width="55px"></el-table-column>
+            <el-table-column prop="productNum" label="product No."></el-table-column>
+            <el-table-column prop="rulesName" label="rules name"></el-table-column>
+            <el-table-column prop="rulesVal" :formatter="formatVal" label="rules value"></el-table-column>
+            <el-table-column prop="fs" label="flight line"></el-table-column>
+            <el-table-column label="operations">
+                <template scope="scope">
+                    <el-button @click="deleteRule(scope.$index)" type="danger" class="el-icon-delete2">delete</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-size="8"
+                layout="prev, pager, next"
+                :total="total">
+        </el-pagination>
+    </el-card>
+
+</div>
+
+

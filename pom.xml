@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.3.RELEASE</version>
+        <relativePath/>
+    </parent>
+    <organization>
+        <name>CZY Technical Committee</name>
+    </organization>
+
+    <groupId>com.czy</groupId>
+    <artifactId>seed</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.1</version>
+
+
+    <name>seed</name>
+    <description>Seed project for czy by Technical Committee</description>
+
+    <modules>
+        <module>seed-mvc</module>
+        <module>seed-web</module>
+        <module>seed-dependencies</module>
+    </modules>
+
+
+
+</project>

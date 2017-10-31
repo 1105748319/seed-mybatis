@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="lib/elementui/lib/theme-default/index.css"/>
+
+    <!-- 引入组件库 -->
+    <!-- 先引入 Vue -->
+    <script src="lib/jquery/jquery-3.2.1.min.js"></script>
+    <script src="lib/vue/vue.js"></script>
+    <script src="lib/vue/vue-resource.min.js"></script>
+    <script src="lib/vue/vue-router.js"></script>
+    <script src="lib/elementui/lib/index.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<el-row id="test">
+    <el-col id="test1" :span="12"><div class="grid-content bg-purple">123</div></el-col>
+    <el-col id="test2" :span="12"><div class="grid-content bg-purple-light">123</div></el-col>
+</el-row>
+
+<script type="text/javascript">
+
+    new Vue({
+        el:'#test1',
+        data:{}
+    })
+    new Vue({
+        el:'#test2',
+        data:{}
+    })
+</script>
+
+</body>
+</html>

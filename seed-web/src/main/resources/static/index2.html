@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <link rel="stylesheet" href="lib/elementui/lib/theme-default/index.css"/>
+
+    <!-- 引入组件库 -->
+    <!-- 先引入 Vue -->
+    <script src="lib/jquery/jquery-3.2.1.min.js"></script>
+    <script src="lib/vue/vue.js"></script>
+    <script src="lib/vue/vue-resource.min.js"></script>
+    <script src="lib/vue/vue-router.js"></script>
+    <script src="lib/elementui/lib/index.js"></script>
+    <title>Title</title>
+</head>
+<style>
+    .red {
+        color: red;
+    }
+</style>
+<body>
+
+<div id="app">
+    <button id="bn" onclick="app.test2()">test112234234</button>
+    <button id="bn4" onclick="app.test4()">test112222</button>
+    <button id="bn1" onclick="fc()">test12</button>
+    <button id="bn2" onclick="app.test3()">app.test3()</button>
+    <router-link to="/foo">Goto Foo</router-link>
+    <router-link to="/bar">Go to Bar</router-link>
+    <router-link to="www.baidu.com11">Test</router-link>
+    <a href="/#/bar">123123</a>
+    <a :href="url">44556</a>
+    <h1>{{con}}</h1>
+    <div id="load"></div>
+    <div id="vhtml" v-html="vhtml"></div>
+    <iframe :src="vsrc"></iframe>
+    <router-view></router-view>
+</div>
+
+
+
+<script>
+$(function () {
+    function test() {
+        router.push("/foo");
+    }
+
+    function fc() {
+        var ff;
+        Vue.http.get('/cn.html').then(
+            response => {
+                console.log(response.body);
+                ff = response.body;
+                app.vhtml = ff;
+            }, response => {
+//                console.log(response);
+                ff = response.body;
+
+            });
+    }
+
+
+    const
+        Foo = {template: '<div class="red">foo</div>'}
+
+    const
+        Bar = {template: '<div class="red">bar</div>'}
+
+    var
+        routes = [
+
+            {
+                path: '/foo', component: Foo
+            },
+            {
+                path:'/tt'
+            },
+            {
+                path: '/bar', component: Bar
+            }
+
+        ]
+
+    var
+        router = new VueRouter({
+
+            routes
+            // （缩写）相当于 routes: routes
+
+        })
+
+    var app = new Vue({
+        el:'#app',
+        data:{
+            con:'',
+            url:'www.baidu.com',
+            vhtml:'',
+            vsrc:''
+        },
+        router,
+        methods:{
+            test() {
+                alert(112)
+            },
+            test2() {
+//                    app.con = '12313';
+//                    alert(window.location);
+//                window.location.hash = '445566777';
+                var params = {};
+                params["_jtype"] = "html";
+                $("#load").load("cn.html",  function (data,status) {
+                    console.log(a);
+                    console.log(status);
+                });
+
+
+//                    htmlobj=$.ajax({url:"cn.html",async:false});
+//                    $("#load").html(htmlobj.responseText);
+
+            },
+            test3() {
+                alert(123);
+                app.vsrc = "cn.html";
+            },
+            test4(){
+                $("#load").load("cn2.html" , function (a) {
+                    console.log(a);
+                    console.log(a);
+                });
+            }
+        }
+
+
+    })
+
+
+
+    //循环执行
+    window.setInterval(showalert, 50);
+    function showalert()
+    {
+        app.test2();
+    }
+    
+})
+
+
+</script>
+
+</body>
+</html>

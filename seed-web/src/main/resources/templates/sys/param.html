@@ -1,0 +1,70 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<script th:src="@{/js/sys/param.js}"></script>
+
+<div id="main-panel">
+    <!--查询工具栏-->
+    <el-row>
+        <el-form :model="queryParam.params">
+            <el-col :span="6" style="padding-right: 5px; padding-bottom: 5px">
+                <el-input placeholder="请输入参数名称查询" v-model="queryParam.name"></el-input>
+            </el-col>
+            <el-col :span="6">
+                <el-button-group>
+                    <el-button type="info" @click="query" icon="search">查询</el-button>
+                    <el-button type="primary" @click="add" icon="plus">新增</el-button>
+                    <el-button type="warning" @click="edit" icon="edit">修改</el-button>
+                </el-button-group>
+            </el-col>
+        </el-form>
+    </el-row>
+
+    <!--数据列表-->
+    <el-row>
+        <el-table :data="pageData" :stripe="true" :border="true" style="width: 100%"
+                  :highlight-current-row="true" max-height="100%" :page-size="queryParam.pageSize"
+                  @current-change="gridSelect" tooltip-effect="light">
+            <el-table-column prop="name" label="参数名称" width="200px"/>
+            <el-table-column prop="code" label="参数编码" width="200px"/>
+            <el-table-column prop="value" label="参数值" width="200px"/>
+            <el-table-column prop="memo" label="备注" :show-overflow-tooltip="true"/>
+            <!--<el-table-column prop="active" width="76px" label="状态">-->
+                <!--<template scope="scope">-->
+                    <!--<el-tag :type="scope.row.active === 1 ? 'primary' : 'danger'">-->
+                        <!--{{ scope.row.active == 1 ? '启用' : '关闭'}}-->
+                    <!--</el-tag>-->
+                <!--</template>-->
+            <!--</el-table-column>-->
+        </el-table>
+    </el-row>
+
+    <!--分页栏-->
+    <el-row>
+        <el-pagination layout="total, prev, pager, next" :total="total"
+                       @current-change="changePage" :page-size="queryParam.pageSize"
+                       :current-page="queryParam.pageNum"/>
+    </el-row>
+
+    <!--维护表单-->
+    <el-dialog title="系统参数管理" :visible.sync="editDialogShow" size="tiny" :close-on-click-modal="false">
+        <el-form :model="formData">
+            <el-form-item label="参数名称" :label-width="formLabelWidth">
+                <el-input v-model="formData.name"></el-input>
+            </el-form-item>
+            <el-form-item label="参数编码" :label-width="formLabelWidth">
+                <el-input v-model="formData.code"></el-input>
+            </el-form-item>
+            <el-form-item label="参数值" :label-width="formLabelWidth">
+                <el-input v-model="formData.value"></el-input>
+            </el-form-item>
+            <el-form-item label="备注" :label-width="formLabelWidth">
+                <el-input v-model="formData.memo" type="textarea" :rows="5"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="editDialogShow = false">取 消</el-button>
+            <el-button type="primary" @click="save">确 定</el-button>
+        </div>
+    </el-dialog>
+
+</div>

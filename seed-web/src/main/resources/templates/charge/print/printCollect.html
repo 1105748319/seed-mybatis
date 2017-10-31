@@ -1,0 +1,118 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>printCollect</title>
+
+    <link rel="stylesheet" th:href="@{/lib/elementui/lib/theme-default/index.css}"/>
+
+    <script th:src="@{/lib/vue/vue.js}"></script>
+    <script th:src="@{/lib/elementui/lib/index.js}"></script>
+    <script th:src="@{/lib/jquery/jquery-3.2.1.min.js}"></script>
+    <style type="text/css">
+        @media print {
+            .not-print{
+                display: none;
+            }
+        }
+    </style>
+</head>
+<div id="printCollect" style="width: 950px;">
+    <el-table :data="printData" :summary-method="getSummaries" show-summary stripe>
+        <el-table-column type="index" width="55px"></el-table-column>
+        <el-table-column v-if="showCreatedBy == true" prop="createBy" label="staff id."></el-table-column>
+        <el-table-column prop="productType" label="product type"></el-table-column>
+        <el-table-column prop="productNum" label="product No."></el-table-column>
+        <el-table-column prop="groupMoney" align="right" :formatter="formatCollectMoney" label="Amount"></el-table-column>
+    </el-table>
+    <el-button @click="print" class="not-print" style="width: 150px;" type="primary">print</el-button>
+</div>
+<input style="display: none;" id="pData" th:value="${printData}" />
+<input style="display: none;" id="pGroup" th:value="${group}" />
+<script>
+    new Vue({
+        el: '#printCollect',
+        data: function () {
+            return{
+                printData: [],
+                showCreatedBy: true
+            }
+        },
+        created: function () {
+            if ($("#pGroup").val() == '2') {
+                this.showCreatedBy = false;
+            } else {
+                this.showCreatedBy = true;
+            }
+            this.printData=eval("("+$("#pData").val()+")");
+        },
+        methods: {
+            print: function () {
+               window.print();
+            },
+            formatCollectMoney: function (row, column) {
+                var money = new Number(row.groupMoney);
+                return this.moneyFormat(money);
+            },
+            moneyFormat: function (money) {
+                var tempMoney = money.toFixed(2);
+                var tempArr = tempMoney.split('.');
+                var temp = tempArr[0];
+                var endNum = '.' + tempArr[1];
+                var result = '';
+                while (temp.length > 3) {
+                    result = ',' + temp.slice(-3) + result;
+                    temp = temp.slice(0, temp.length - 3);
+                }
+                if (temp) {
+                    result = temp + result;
+                }
+                result += endNum;
+
+                return result;
+            },
+            getSummaries:function (param) {//收费统计
+                var columns = param.columns;
+                var data = param.data;
+                var sums = [];
+                var num= 0;
+                var money = 0;
+                for(var i=0;i<data.length;i++){
+                    num += data[i].productNum;
+                    money += data[i].groupMoney;
+                }
+                money = this.moneyFormat(money);
+                this.totalNum = num;
+
+                var showCreatedBy = this.showCreatedBy;
+                columns.forEach(function(column, index) {
+                    var a = 2,b = 3,c = 4;
+                    //不展示创建人
+                    if (!showCreatedBy) {
+                        a = 1;
+                        b = 2;
+                        c = 3;
+                    }
+
+                    if (index == a) {
+                        sums[a] = 'total';
+                        return;
+                    }if (index == b) {
+
+                        sums[b] = num;
+                        return;
+                    }if (index == c) {
+                        sums[c] = money;
+                        return;
+                    }
+                });
+
+                return sums;
+
+            }
+        }
+    });
+</script>
+</html>

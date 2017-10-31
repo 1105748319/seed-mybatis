@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.czy.seed.mybatis.mapper.MySqlMapper">
+
+    <resultMap id="BaseResultMap1" types="com.czy.seed.mybatis.entity.TestEntity">
+        <id column="ID" property="id"/>
+        <result column="NAME" property="name"/>
+        <association property="one" column="ID" javaType="com.czy.seed.mybatis.entity.One">
+            <id property="id" column="t_id"/>
+            <result property="name" column="t_name"/>
+        </association>
+
+        <!--<association property="one" column="id" select="OneMapper.selectByPrimaryKey"-->
+        <!--fetchType="lazy"/>-->
+    </resultMap>
+
+    <select id="selectByPrimaryKey1" resultMap="BaseResultMap1" parameterType="long">
+        select
+        <trim prefix=" " suffix=" " suffixOverrides=",">
+            test.ID,
+            test.NAME,
+            one.id as t_id,
+            one.name as t_name
+        </trim>
+        from test left join one on test.id = one.test_id
+        <trim prefix=" where " suffix=" " suffixOverrides="and">
+            test.ID = #{id} and
+        </trim>
+    </select>
+
+
+    <resultMap id="BaseResultMap2" types="com.czy.seed.mybatis.entity.TestEntity">
+        <id column="ID" property="id"/>
+        <result column="NAME" property="name"/>
+        <collection property="one" ofType="com.czy.seed.mybatis.entity.One">
+            <id column="ID_0" property="id"/>
+            <result column="NAME_0" property="name"/>
+            <result column="MEMO_0" property="memo"/>
+            <result column="TEST_ID_0" property="testId"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectRelativeByPrimaryKey2" resultMap="BaseResultMap2" parameterType="long">
+        select
+        <trim prefix=" " suffix=" " suffixOverrides=",">
+            test.ID,
+            test.NAME,
+            ONE.NAME as NAME_0,
+            ONE.MEMO as MEMO_0,
+            ONE.ID as ID_0,
+            ONE.TEST_ID as TEST_ID_0,
+        </trim>
+        from test
+        LEFT join ONE on test.id = ONE.test_id
+        <trim prefix=" where " suffix=" " suffixOverrides="and">
+            test.ID = #{id} and
+        </trim>
+    </select>
+
+    <select id="callPro" statementType="CALLABLE" resultType="java.lang.String">
+      <![CDATA[
+
+
+        {
+            call pro2(
+              #{a, mode=IN, jdbcType=INTEGER}
+            )
+        }
+
+
+        ]]>
+    </select>
+
+    <!--<select id="callPro3" statementType="CALLABLE" resultType="TestEntity">-->
+    <!--<![CDATA[-->
+    <!--{-->
+    <!--call pro3(-->
+    <!--#{a, mode=IN, jdbcType=INTEGER}-->
+    <!--)-->
+    <!--}-->
+    <!--]]>-->
+    <!--</select>-->
+
+    <insert id="insertList1" parameterType="java.util.ArrayList" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        <selectKey resultType="java.lang.Long" keyProperty="id" keyColumn="id" order="BEFORE">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO
+        test(id, NAME)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.name})
+        </foreach>
+    </insert>
+
+
+    <insert id="insertList_right" useGeneratedKeys="true" keyProperty="id" keyColumn="id"
+            parameterType="java.util.ArrayList">
+        INSERT INTO
+        test(id, NAME)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.name})
+        </foreach>
+    </insert>
+
+</mapper>

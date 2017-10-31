@@ -1,0 +1,175 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<script th:src="@{/js/charge/product.js}"></script>
+<div id="productManager" style="font-family: 'Times New Roman';font-size: 11pt;">
+    <el-card>
+
+        <el-form ref="form" :model="form" label-width="120px">
+
+            <el-row>
+                <el-col :span="5">
+                    <el-form-item label="product name">
+                        <el-input v-model="form.productName"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-form-item label="product No.">
+                        <el-input v-model="form.productNum"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-form-item label="product type">
+                        <template>
+                            <el-select v-model="form.productType">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </template>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="9">
+                    <el-button-group>
+                        <el-button @click="queryListByParams" type="primary" class="el-icon-search"
+                                   style="margin-left: 20px;"> search
+                        </el-button>
+                        <el-button @click="dialogFormVisible = true;" type="primary" class="el-icon-plus"> add</el-button>
+                    </el-button-group>
+                </el-col>
+            </el-row>
+        </el-form>
+    </el-card>
+
+    <el-card class="box-card">
+        <el-table :data="tableData" stripe style="width: 100%">
+            <el-table-column type="index" width="55px"></el-table-column>
+            <el-table-column prop="productNum" label="product No."></el-table-column>
+            <el-table-column prop="productName" label="product name"></el-table-column>
+            <el-table-column prop="productUnitPrice" :formatter="formatPrice" label="unit price"></el-table-column>
+            <el-table-column prop="productType" label="product type"></el-table-column>
+            <el-table-column label="operations" width="350px;">
+                <template scope="scope">
+                    <el-button-group>
+                        <el-button @click="updateProduct(scope.$index)" type="primary" class="el-icon-edit">update
+                        </el-button>
+                        <el-button @click="deleteProduct(scope.$index)" type="danger" class="el-icon-delete2">delete
+                        </el-button>
+                        <el-button v-if="tableData[scope.$index].productType != options[4].value"
+                                   @click="addProductRule(scope.$index)" type="info" class="el-icon-plus">bindRules
+                        </el-button>
+                    </el-button-group>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-size="8"
+                layout=" prev, pager, next"
+                :total="total">
+        </el-pagination>
+    </el-card>
+
+
+    <el-dialog title="add product" :visible.sync="dialogFormVisible" :before-close="beforeCloseProductForm" size="tiny">
+        <el-form :model="productForm" ref="productForm" style="margin-left: -50px;" :rules="rulesProduct" resetFields>
+            <el-form-item label="product No." :label-width="formLabelWidth" prop="productNum">
+                <el-input v-model="productForm.productNum" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="product name" :label-width="formLabelWidth" prop="productName">
+                <el-input v-model="productForm.productName" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="product type" :label-width="formLabelWidth">
+                <el-select v-model="productForm.productType" placeholder="请选择">
+                    <el-option
+                            v-for="item in productTypes"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="unit price" :label-width="formLabelWidth" prop="productUnitPrice">
+                <el-input v-model="productForm.productUnitPrice" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="unit" :label-width="formLabelWidth" prop="unitType">
+                <el-input v-model="productForm.unitType" auto-complete="off"></el-input>
+            </el-form-item>
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="closeProductForm">cancel</el-button>
+            <el-button type="primary" @click="addOneProduct">confirm</el-button>
+        </div>
+    </el-dialog>
+
+
+    <el-dialog title="update product" :visible.sync="dialogUpdateProduct" :before-close="beforeCloseUpdateForm" size="tiny">
+        <el-form :model="updateProductForm" ref="updateForm" :rules="rulesUpdateProduct" style="margin-left: -50px;">
+            <el-form-item label="product No" :label-width="formLabelWidth" prop="productNum">
+                <el-input v-model="updateProductForm.productNum" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="product name" :label-width="formLabelWidth" prop="productName">
+                <el-input v-model="updateProductForm.productName" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="product type" :label-width="formLabelWidth">
+                <el-select v-model="updateProductForm.productType">
+                    <el-option
+                            v-for="item in productTypes"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="unit price" :label-width="formLabelWidth" prop="productUnitPrice">
+                <el-input v-model="updateProductForm.productUnitPrice" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="unit" :label-width="formLabelWidth" prop="unitType">
+                <el-input v-model="updateProductForm.unitType" auto-complete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="closeUpdateForm">cancel</el-button>
+            <el-button type="primary" @click="sureUpdateProduct">confirm</el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="bind rules" :visible.sync="dialogAddProductRule" :before-close="beforeCloseRuleForm" size="tiny">
+        <el-form :model="addProductRuleForm" ref="ruleForm" :rules="rulesR" style="margin-left: -50px;">
+            <el-form-item label="product No." :label-width="formLabelWidth">
+                <el-input v-model="addProductRuleForm.productNum" :disabled="true" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="product name" :label-width="formLabelWidth">
+                <el-input v-model="addProductRuleForm.productName" :disabled="true" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="product type" :label-width="formLabelWidth">
+                <el-input v-model="addProductRuleForm.productType" :disabled="true" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="flight line" :label-width="formLabelWidth" prop="fs">
+                <el-input v-model="addProductRuleForm.fs" placeholder="Example:NRTPVG" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item v-if="addProductRuleForm.productType == 'BAGGAGE' || addProductRuleForm.productType == 'SEAT'"
+                          label="rules name" prop="rulesName" :label-width="formLabelWidth">
+                <el-input v-model="addProductRuleForm.rulesName" placeholder="Example:seat:1；2,3；4-10 baggage:5-10" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="rules value" :label-width="formLabelWidth" prop="rulesVal">
+                <el-input v-model="addProductRuleForm.rulesVal" auto-complete="off"></el-input>
+            </el-form-item>
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="closeRuleForm">cancel</el-button>
+            <el-button type="primary" @click="sureAddProductRule">confirm</el-button>
+        </div>
+    </el-dialog>
+
+
+</div>
+
+

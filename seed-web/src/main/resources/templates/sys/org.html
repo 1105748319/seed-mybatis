@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <script th:src="@{/js/sys/org.js}"></script>
+</head>
+
+<body>
+
+<style>
+    .split {
+        width: 3px;
+        min-height: 100px;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+</style>
+
+<div id="main">
+
+    <el-row>
+        <!--组织结构-->
+        <el-col :span="7" class="orgTree">
+            <el-card class="box-card" style="height: 100%!important;">
+                <div slot="header" style="max-height: 10px!important;">
+                    机构管理
+                </div>
+                <el-row style="margin-bottom: 5px">
+                    <el-button id="addOrg" type="primary" @click="openAddWin" icon="plus">新增</el-button>
+                </el-row>
+                <el-row>
+                    <el-tree id="orgTree"
+                             ref="orgTree"
+                             :default-expanded-keys="defaultExpandedKeys"
+                             :expand-on-click-node="false"
+                             :highlight-current="true"
+                             :data="treeData"
+                             :props="defaultProps"
+                             node-key="id"
+                             check-strictly
+                             show-checkbox
+                             @node-click="handleNodeClick"
+                             :render-content="renderContent">
+                    </el-tree>
+                </el-row>
+            </el-card>
+        </el-col>
+
+        <!--用户管理-->
+        <el-col :span="9">
+            <el-card class="box-card">
+                <div slot="header" style="max-height: 10px!important;">
+                    用户管理
+                </div>
+                <el-row id="toolbar" style="margin-bottom: 5px">
+                    <el-col :span="7" style="padding-right: 5px">
+                        <el-input placeholder="请输入姓名" v-model="searchName"/>
+                    </el-col>
+                    <el-col :span="17">
+                        <el-button-group>
+                            <el-button type="info" @click="selectUser" icon="search">查询</el-button>
+                            <el-button type="primary" @click="addUser" icon="plus">新增</el-button>
+                            <el-button type="warning" @click="editUser" icon="edit">修改</el-button>
+                            <el-button type="danger" @click="delUser" icon="delete">删除</el-button>
+                        </el-button-group>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-table :data="tableData" :stripe="true" :border="true" style="width: 100%"
+                                  :highlight-current-row="true" max-height="100%" :page-size="pageSize"
+                                  @current-change="userSelected" tooltip-effect="light">
+                            </el-table-column>
+                            <el-table-column prop="name" label="姓名"/>
+                            <el-table-column prop="email" label="邮件" :show-overflow-tooltip="true"/>
+                            <el-table-column prop="org" label="部门"/>
+                        </el-table>
+                    </el-col>
+                    <el-col>
+                        <el-pagination layout="total, prev, pager, next" :total="pageTotal"
+                                       :page-count="pageCount" @current-change="toPage" :page-size="pageSize"/>
+                    </el-col>
+                </el-row>
+            </el-card>
+        </el-col>
+
+        <el-col :span="8">
+            <el-card class="box-card">
+                <div slot="header" style="max-height: 10px!important;">
+                    用户角色
+                </div>
+                <el-row style="margin-bottom: 5px">
+                    <el-button v-if="selectedUser" type="primary" @click="saveUserRole" icon="circle-check">保存</el-button>
+                </el-row>
+                <el-row>
+                    <el-table ref="roleTable" :data="roleData" :stripe="true" :border="true" style="width: 100%"
+                              max-height="100%" :page-size="pageSize" row-key="id"
+                              @select="roleDataSelect" @select-all="roleDataSelect" tooltip-effect="light">
+                        <el-table-column type="selection" width="55"/>
+                        <el-table-column prop="name" label="角色名"/>
+                        <el-table-column prop="code" label="角色编码"/>
+                    </el-table>
+                </el-row>
+            </el-card>
+        </el-col>
+
+        <el-dialog title="组织机构管理" :visible.sync="operateDialogShow" size="tiny" :close-on-click-modal="false">
+            <el-form :model="sysOrg">
+                <el-form-item label="机构编码" :label-width="formLabelWidth">
+                    <el-input v-model="sysOrg.code"></el-input>
+                </el-form-item>
+                <el-form-item label="机构名称" :label-width="formLabelWidth">
+                    <el-input v-model="sysOrg.name"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" :label-width="formLabelWidth">
+                    <el-input v-model="sysOrg.memo" type="textarea" :rows="5"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="operateDialogShow = false">取 消</el-button>
+                <el-button type="primary" @click="saveOrg">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog title="用户管理" :visible.sync="userDialogShow" size="tiny" :close-on-click-modal="false">
+            <el-form :model="sysUser">
+                <el-form-item label="姓名" :label-width="formLabelWidth">
+                    <el-input v-model="sysUser.name"></el-input>
+                </el-form-item>
+                <el-form-item label="账号" :label-width="formLabelWidth">
+                    <el-input v-model="sysUser.username"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" :label-width="formLabelWidth">
+                    <el-input v-model="sysUser.password"></el-input>
+                </el-form-item>
+                <el-form-item label="邮件" :label-width="formLabelWidth">
+                    <el-input v-model="sysUser.email"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="userDialogShow = false">取 消</el-button>
+                <el-button type="primary" @click="saveUser">确 定</el-button>
+            </div>
+        </el-dialog>
+
+    </el-row>
+</div>
+</body>
+</html>

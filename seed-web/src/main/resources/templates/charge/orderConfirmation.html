@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<title>SEED</title>
+
+<head th:include="header"/>
+
+<body>
+
+
+<style>
+    .formItem {
+        height: 25px;
+    }
+</style>
+
+
+<div id="orderS">
+
+    <el-col :span="21">
+        <el-card>
+
+            <el-form ref="form" :model="formS" label-width="120px" :inline="true">
+
+                <el-col :span="8">
+                    <el-form-item class="formItem" label="Product order No.">
+                        <el-input :disabled="true" v-model="formS.orderNum"></el-input>
+                    </el-form-item>
+                    <el-form-item class="formItem" label="Name">
+                        <el-input :disabled="true" v-model="formS.name"></el-input>
+                    </el-form-item>
+                    <el-form-item class="formItem" label="Total">
+                        <el-input :disabled="true" v-model="totalNum"></el-input>
+                    </el-form-item>
+                    <el-form-item class="formItem" label="Actual Receipt">
+                        <el-input  v-focus="ONOFF" @keyup.enter.native="radioData"
+                                  v-model="formS.actualAmount"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item class="formItem" label="Flight No.">
+                        <el-input :disabled="true" v-model="formS.fi"></el-input>
+                    </el-form-item>
+                    <el-form-item class="formItem" label="ID No.">
+                        <el-input :disabled="true" v-model="formS.licenseNo"></el-input>
+                    </el-form-item>
+                    <el-form-item class="formItem" label="Account Receivable">
+                        <el-input :disabled="true" v-model="formS.receivableAmount"></el-input>
+                    </el-form-item>
+                    <el-form-item class="formItem" label="Order Status">
+                        <el-input :disabled="true" v-model="formS.type"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-col :span="18" :offset="6">
+                        <el-form-item class="formItem">
+                            <el-button style="width: 150px;" class="warning" type="warning" @click="cancelCharge">C
+                                Cancel
+                            </el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="18" :offset="6">
+                        <el-form-item class="formItem">
+                            <el-button style="width: 150px;" class="success" type="success" @click="successCharge">Y
+                                Confirm
+                            </el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="18" :offset="6">
+                        <el-form-item class="formItem">
+                            <el-button style="width: 150px;" class="danger" type="danger" @click="refundCharge">D Refund
+                            </el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-form-item class="formItem" label="Payment Method:">
+                            <template>
+                                <el-radio class="radio" v-model="radio" label="1">Cash</el-radio>
+                                <el-radio class="radio" v-model="radio" label="2">POS</el-radio>
+                                <el-radio class="radio" v-model="radio" label="3">POS(G)</el-radio>
+                            </template>
+                        </el-form-item>
+                    </el-col>
+
+                </el-col>
+            </el-form>
+        </el-card>
+        <el-card class="box-card">
+            <el-table :data="tableData" :summary-method="getSummaries"
+                      show-summary stripe style="width: 100%">
+                <el-table-column type="index" width="55px"></el-table-column>
+                <el-table-column prop="productType" label="Product Categories"></el-table-column>
+                <el-table-column prop="productNum" label="Product No."></el-table-column>
+                <el-table-column prop="productName" label="Name"></el-table-column>
+                <el-table-column prop="unit" label="Piece/Weight/Seat No."></el-table-column>
+                <el-table-column prop="money" label="Amount"></el-table-column>
+            </el-table>
+        </el-card>
+    </el-col>
+    <el-col :span="3">
+        <el-row>
+            <el-col :span="24" :offset="3">
+                <p><b>Mobile:ENTER</b></p>
+            </el-col>
+        </el-row>
+
+
+        <el-row>
+            <el-col :span="24" :offset="3">
+                <p><b>Confirm:ALT+Y</b></p>
+            </el-col>
+        </el-row>
+
+        <el-row>
+            <el-col :span="24" :offset="3">
+                <p><b>Refund:ALT+D</b></p>
+            </el-col>
+        </el-row>
+
+
+        <el-row>
+            <el-col :span="24" :offset="3">
+                <p><b>Cancel:ALT+C</b></p>
+            </el-col>
+        </el-row>
+
+
+        <el-row>
+            <el-col :span="24" :offset="3">
+                <p><b>
+                    <el-button style="width: 150px;" class="return" type="primary" @click="returnInitial">R Return
+                    </el-button>
+                </b></p>
+            </el-col>
+        </el-row>
+    </el-col>
+    <el-dialog title="Fare Verification and Refund" :visible.sync="chargeNumShow" size="tiny"
+               :close-on-click-modal="false">
+        <el-form>
+
+            <el-form-item label="Order No.：">
+                <input v-model="chargeNum" @keyup.enter="selectOrder" id="chargeNumId">
+            </el-form-item>
+            <input id="hiddenText" type="text" style="display:none" />
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="selectOrder">Query</el-button>
+        </div>
+
+    </el-dialog>
+    <span id="sp" th:text="${name}"></span>
+
+    <!--收费确认弹出框-->
+    <el-dialog  :visible.sync="ConfirmShow" size="tiny" :close-on-click-modal="false">
+        <span>You have confirmed the charge?</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @keyup.right.native="keyICR('.ConfirmCancel')" class="ConfirmShow"  @click="successChargeBAK">Confirm</el-button>
+            <el-button @keyup.left.native="keyICR('.ConfirmShow')" class="ConfirmCancel" @click="ConfirmShow = false">Cancel</el-button>
+        </span>
+    </el-dialog>
+    <!--收费取消弹出框-->
+    <el-dialog  :visible.sync="CancelShow" size="tiny" :close-on-click-modal="false">
+        <span>You confirm to cancel the order?</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @keyup.right.native="keyICR('.CancelCancel')" class="CancelShow"  @click="cancelChargeBAK">Confirm</el-button>
+            <el-button @keyup.left.native="keyICR('.CancelShow')" class="CancelCancel" @click="CancelShow = false">Cancel</el-button>
+        </span>
+    </el-dialog>
+    <!--收费退款弹出框-->
+    <el-dialog  :visible.sync="RefundShow" size="tiny" :close-on-click-modal="false">
+        <span>You confirm the order have a refund?</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @keyup.right.native="keyICR('.RefundCancel')" class="RefundShow"  @click="refundChargeBak">Confirm</el-button>
+            <el-button @keyup.left.native="keyICR('.RefundShow')" class="RefundCancel" @click="RefundShow = false">Cancel</el-button>
+        </span>
+    </el-dialog>
+
+</div>
+<script th:if="${CKI!=null}" th:src="@{/js/charge/shortcut.js}"></script>
+<script th:src="@{/js/charge/orderConfirmation.js}"></script>
+
+</body>
+</html>
