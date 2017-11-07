@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.czy</groupId>
             <artifactId>seed-mybatis</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
