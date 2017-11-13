@@ -2,7 +2,6 @@ package com.czy.seed.mvc.util;
 
 import com.czy.seed.mvc.auth.SecurityUser;
 import com.czy.seed.mvc.auth.UserAuthority;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;

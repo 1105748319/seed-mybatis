@@ -2,10 +2,10 @@ package com.czy.seed.mvc.aop;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
+import com.czy.seed.mvc.util.PrincipalUtil;
 import com.czy.seed.mvc.annotation.AutoLog;
 import com.czy.seed.mvc.sys.entity.SysLog;
 import com.czy.seed.mvc.sys.service.SysLogService;
-import com.czy.seed.mvc.util.PrincipalUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;

@@ -1,6 +1,6 @@
 //package com.czy.seed.mvc.sys.service.impl;
 //
-//import com.czy.seed.mvc.sys.entity.SysResource;
+//import SysResource;
 //import org.junit.Ignore;
 //import org.junit.Test;
 //

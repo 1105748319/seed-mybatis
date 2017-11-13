@@ -10,4 +10,11 @@
 			</list>
 		</property>
 	</bean>
+	<bean id="propertyConfigurers" class="com.czy.seed.mybatis.tool.SpringPropertiesUtil">
+		<property name="locations">
+			<list>
+				<value>classpath:config/application.properties</value>
+			</list>
+		</property>
+	</bean>
 </beans>

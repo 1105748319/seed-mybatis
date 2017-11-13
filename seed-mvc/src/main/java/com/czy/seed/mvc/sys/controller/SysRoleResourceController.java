@@ -1,9 +1,8 @@
 package com.czy.seed.mvc.sys.controller;
 
-import com.czy.seed.mvc.sys.entity.SysOrg;
+import com.czy.seed.mvc.util.Res;
 import com.czy.seed.mvc.sys.entity.SysRoleResource;
 import com.czy.seed.mvc.sys.service.SysRoleResourceService;
-import com.czy.seed.mvc.util.Res;
 import com.czy.seed.mybatis.base.QueryParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

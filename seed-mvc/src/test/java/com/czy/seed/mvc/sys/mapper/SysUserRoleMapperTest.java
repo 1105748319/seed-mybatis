@@ -1,6 +1,6 @@
 //package com.czy.seed.mvc.sys.mapper;
 //
-//import com.czy.seed.mvc.sys.entity.SysRole;
+//import SysRole;
 //import org.junit.Ignore;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;

@@ -1,10 +1,7 @@
 package com.czy.seed.mvc.charge.config.service.impl;
-import com.czy.seed.mvc.base.service.BaseService;
-import com.czy.seed.mvc.base.service.impl.BaseServiceImpl;
-import com.czy.seed.mvc.charge.config.entity.TblOrder;
 import com.czy.seed.mvc.charge.config.entity.TblOrderDetail;
-import com.czy.seed.mvc.charge.config.mapper.OrderDetailMapper;
 import com.czy.seed.mvc.charge.config.service.OrderDetailService;
+import com.czy.seed.mvc.base.service.impl.BaseServiceImpl;
 import com.czy.seed.mybatis.base.QueryParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +20,7 @@ public class OrderDetailServiceImpl extends BaseServiceImpl<TblOrderDetail> impl
     private Logger logger = LoggerFactory.getLogger(OrderDetailServiceImpl.class);
 
     @Autowired
-    private OrderDetailMapper OrderDetailMapper;
+    private com.czy.seed.mvc.charge.config.mapper.OrderDetailMapper OrderDetailMapper;
 
     /**
      * liuyun

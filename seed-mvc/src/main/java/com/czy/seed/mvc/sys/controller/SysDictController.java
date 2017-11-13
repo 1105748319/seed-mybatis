@@ -1,9 +1,9 @@
 package com.czy.seed.mvc.sys.controller;
 
-import com.czy.seed.mvc.annotation.AutoLog;
-import com.czy.seed.mvc.base.controller.BaseController;
 import com.czy.seed.mvc.sys.entity.SysDict;
 import com.czy.seed.mvc.util.Res;
+import com.czy.seed.mvc.annotation.AutoLog;
+import com.czy.seed.mvc.base.controller.BaseController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,7 +1,6 @@
 package com.czy.seed.mvc.sys.controller;
 
 import com.czy.seed.mvc.base.controller.Params;
-import com.czy.seed.mvc.sys.entity.SysOrg;
 import com.czy.seed.mvc.sys.entity.SysUser;
 import com.czy.seed.mvc.sys.service.SysUserService;
 import com.czy.seed.mvc.util.Res;

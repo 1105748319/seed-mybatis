@@ -1,11 +1,11 @@
 package com.czy.seed.mvc.sys.service.impl;
 
 import com.czy.seed.mvc.auth.UserAuthority;
-import com.czy.seed.mvc.base.service.impl.BaseServiceImpl;
 import com.czy.seed.mvc.sys.entity.SysResource;
 import com.czy.seed.mvc.sys.mapper.SysResourceMapper;
 import com.czy.seed.mvc.sys.service.SysResourceService;
 import com.czy.seed.mvc.util.PrincipalUtil;
+import com.czy.seed.mvc.base.service.impl.BaseServiceImpl;
 import com.czy.seed.mybatis.base.QueryParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,5 @@
 package com.czy.seed.mvc.sys.entity;
 
-import com.czy.seed.mybatis.config.mybatis.annotations.One2Many;
 import com.czy.seed.mybatis.config.mybatis.annotations.One2One;
 
 import javax.persistence.Id;

@@ -1,6 +1,5 @@
 package com.czy.seed.mvc.auth;
 
-import org.springframework.security.authentication.jaas.JaasGrantedAuthority;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 

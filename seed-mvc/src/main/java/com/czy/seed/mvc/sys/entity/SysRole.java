@@ -2,9 +2,6 @@ package com.czy.seed.mvc.sys.entity;
 
 import com.czy.seed.mvc.base.entity.BaseEntity;
 
-import javax.persistence.Id;
-import java.io.Serializable;
-
 /**
  * Created by PLC on 2017/5/23.
  */

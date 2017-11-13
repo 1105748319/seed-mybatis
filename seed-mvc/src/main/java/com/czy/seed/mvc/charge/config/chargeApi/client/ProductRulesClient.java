@@ -1,10 +1,9 @@
 package com.czy.seed.mvc.charge.config.chargeApi.client;
 
-import com.alibaba.fastjson.JSON;
-import com.czy.seed.mvc.charge.config.entity.TblProduct;
 import com.czy.seed.mvc.charge.config.entity.TblProductRules;
 import com.czy.seed.mvc.charge.config.service.ProductRulesService;
 import com.czy.seed.mvc.charge.config.service.ProductService;
+import com.czy.seed.mvc.charge.config.entity.TblProduct;
 
 import com.czy.seed.mybatis.base.QueryParams;
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.List;
-import java.util.Map;
 
 
 /**

@@ -1,6 +1,5 @@
 package com.czy.seed.mvc.charge.config.ckiApi;
 
-import com.czy.seed.mvc.util.PrincipalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;

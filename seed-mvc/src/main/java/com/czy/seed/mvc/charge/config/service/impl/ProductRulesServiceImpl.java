@@ -3,10 +3,10 @@ package com.czy.seed.mvc.charge.config.service.impl;
 
 
 
-import com.czy.seed.mvc.base.service.impl.BaseServiceImpl;
 import com.czy.seed.mvc.charge.config.entity.TblProductRules;
-import com.czy.seed.mvc.charge.config.mapper.ProductRulesMapper;
 import com.czy.seed.mvc.charge.config.service.ProductRulesService;
+import com.czy.seed.mvc.base.service.impl.BaseServiceImpl;
+import com.czy.seed.mvc.charge.config.mapper.ProductRulesMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

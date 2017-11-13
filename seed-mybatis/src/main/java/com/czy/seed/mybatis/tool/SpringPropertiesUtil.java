@@ -15,12 +15,12 @@ import java.util.Properties;
 @Component
 public class SpringPropertiesUtil extends PropertyPlaceholderConfigurer {
 
-	private static Map<String, Object> ctxPropertiesMap;
+	private static Map<String, Object> ctxPropertiesMap = new HashMap<String, Object>();
 
 	@Override
 	protected void processProperties(ConfigurableListableBeanFactory beanFactory, Properties props) throws BeansException {
 		super.processProperties(beanFactory, props);
-		ctxPropertiesMap = new HashMap<String, Object>();
+		//ctxPropertiesMap = new HashMap<String, Object>();
 		for (Object key : props.keySet()) {
 			String keyStr = key.toString();
 			String value = props.getProperty(keyStr);

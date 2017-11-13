@@ -1,7 +1,7 @@
 package com.czy.seed.mvc.charge.config.ckiApi;
+import com.czy.seed.mvc.util.Res;
 import com.czy.seed.mvc.charge.config.entity.TblLog;
 import com.czy.seed.mvc.charge.config.service.LogService;
-import com.czy.seed.mvc.util.Res;
 import com.czy.seed.mybatis.base.QueryParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

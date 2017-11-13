@@ -5,7 +5,7 @@ import com.czy.seed.mvc.base.entity.PrepareEntity;
 /**
  * Created by 003914[panlc] on 2017-06-05.
  */
-public class SysDict extends PrepareEntity  {
+public class SysDict extends PrepareEntity {
 
     private static final long serialVersionUID = -3036113094653530550L;
     private String code;

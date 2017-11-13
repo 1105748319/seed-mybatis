@@ -1,10 +1,9 @@
 package com.czy.seed.mvc.sys.service.impl;
 
-import com.czy.seed.mvc.base.service.impl.BaseServiceImpl;
 import com.czy.seed.mvc.sys.entity.SysOrg;
-import com.czy.seed.mvc.sys.entity.SysResource;
 import com.czy.seed.mvc.sys.mapper.SysOrgMapper;
 import com.czy.seed.mvc.sys.service.SysOrgService;
+import com.czy.seed.mvc.base.service.impl.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

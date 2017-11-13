@@ -7,7 +7,7 @@ import com.czy.seed.mybatis.tool.SpringPropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
@@ -28,11 +28,7 @@ public class MapperConfiguration implements BeanPostProcessor {
     @Autowired
     private DataBaseEnvInit dataBaseEnvInit;    //让该类在DataBaseEnvInit初始化之后再进行初始化，低版本Spring中不可删除。无其他作用
 
-    @Autowired
-    private MybatisConfig mybatisConfig;
 
-    @Autowired
-    private BeanFactory beanFactory;
 
     @Autowired
     private ResourceLoader resourceLoader;

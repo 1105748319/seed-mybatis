@@ -1,7 +1,7 @@
 package com.czy.seed.mvc.sys.service;
 
-import com.czy.seed.mvc.base.service.BaseService;
 import com.czy.seed.mvc.sys.entity.SysResource;
+import com.czy.seed.mvc.base.service.BaseService;
 
 import java.util.List;
 

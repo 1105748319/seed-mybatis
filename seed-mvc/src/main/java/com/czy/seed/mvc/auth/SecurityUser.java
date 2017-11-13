@@ -6,7 +6,6 @@ import com.czy.seed.mvc.sys.mapper.SysUserRoleMapper;
 import com.czy.seed.mybatis.config.mybatis.annotations.Cache;
 import com.czy.seed.mybatis.tool.SpringContextHelper;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;

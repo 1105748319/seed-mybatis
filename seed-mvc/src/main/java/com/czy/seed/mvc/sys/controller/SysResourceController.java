@@ -1,10 +1,9 @@
 package com.czy.seed.mvc.sys.controller;
 
-import com.czy.seed.mvc.auth.UserAuthority;
 import com.czy.seed.mvc.sys.entity.SysResource;
-import com.czy.seed.mvc.sys.service.SysResourceService;
 import com.czy.seed.mvc.util.PrincipalUtil;
 import com.czy.seed.mvc.util.Res;
+import com.czy.seed.mvc.sys.service.SysResourceService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -4,23 +4,19 @@ package com.czy.seed.mvc.charge.config.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.fastjson.JSONObject;
-import com.czy.seed.mvc.annotation.AutoLog;
 import com.czy.seed.mvc.charge.config.entity.TblLog;
 import com.czy.seed.mvc.charge.config.entity.TblOrder;
-
 import com.czy.seed.mvc.charge.config.entity.TblOrderDetail;
 import com.czy.seed.mvc.charge.config.entity.TblProduct;
-
 import com.czy.seed.mvc.charge.config.service.LogService;
 import com.czy.seed.mvc.charge.config.service.OrderDetailService;
 import com.czy.seed.mvc.charge.config.service.OrderService;
 import com.czy.seed.mvc.charge.config.service.ProductService;
-
-
 import com.czy.seed.mvc.charge.config.util.ChargeMap;
-
 import com.czy.seed.mvc.charge.config.util.PropertiesUtil;
 import com.czy.seed.mvc.util.Res;
+
+
 import com.czy.seed.mybatis.base.QueryParams;
 
 import org.slf4j.Logger;

@@ -9,6 +9,6 @@ import org.springframework.context.annotation.ImportResource;
  */
 
 @Configuration
-@ComponentScan("com.czy.seed.mvc")
+@ComponentScan("com.ch.seed.mvc")
 public class MvcStarter {
 }

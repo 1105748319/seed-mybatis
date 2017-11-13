@@ -1,11 +1,11 @@
 package com.czy.seed.mvc.base.controller;
 
 import com.czy.seed.mvc.base.entity.BaseEntity;
-import com.czy.seed.mvc.base.exception.IllegalleControllerNameException;
 import com.czy.seed.mvc.base.param.Param;
-import com.czy.seed.mvc.base.service.BaseService;
 import com.czy.seed.mvc.util.GenricUtil;
 import com.czy.seed.mvc.util.Res;
+import com.czy.seed.mvc.base.exception.IllegalleControllerNameException;
+import com.czy.seed.mvc.base.service.BaseService;
 import com.czy.seed.mybatis.base.QueryParams;
 import com.github.pagehelper.Page;
 import org.springframework.beans.factory.annotation.Autowired;

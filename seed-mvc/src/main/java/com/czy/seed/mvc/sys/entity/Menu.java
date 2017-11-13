@@ -1,6 +1,5 @@
 package com.czy.seed.mvc.sys.entity;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**

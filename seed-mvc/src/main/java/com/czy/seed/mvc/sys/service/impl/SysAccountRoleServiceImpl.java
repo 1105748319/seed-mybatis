@@ -1,8 +1,8 @@
 package com.czy.seed.mvc.sys.service.impl;
 
-import com.czy.seed.mvc.base.service.impl.BaseServiceImpl;
 import com.czy.seed.mvc.sys.entity.SysUserRole;
 import com.czy.seed.mvc.sys.service.SysAccountRoleService;
+import com.czy.seed.mvc.base.service.impl.BaseServiceImpl;
 import com.czy.seed.mybatis.base.QueryParams;
 import org.springframework.stereotype.Service;
 
